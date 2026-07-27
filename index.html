@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Love-Bet｜曾譽賢 × 李昕</title>
+  <style>
+    :root { --bg:#111318; --surface:#1a1e26; --surface-2:#222834; --line:#343c4b; --text:#f1f4f8; --muted:#9ca6b5; --accent:#5f91ff; --accent-dark:#3069dc; --success:#56c596; --danger:#ff7485; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; color:var(--text); font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif; background:var(--bg); }
+    .wrap { width:min(100% - 32px,720px); margin:0 auto; padding:56px 0 64px; }
+    header { margin-bottom:28px; }
+    .eyebrow { color:var(--accent); font-size:.78rem; font-weight:800; letter-spacing:.12em; }
+    h1 { margin:9px 0 8px; font-size:clamp(2.1rem,7vw,3.65rem); line-height:1; letter-spacing:-.05em; }
+    h1 span { color:var(--accent); }
+    .tagline { margin:0; color:var(--muted); font-size:.97rem; }
+    .card { background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:clamp(20px,5vw,32px); }
+    .rule { display:flex; align-items:center; justify-content:space-between; gap:12px; color:var(--muted); font-size:.93rem; padding-bottom:19px; border-bottom:1px solid var(--line); margin-bottom:25px; }
+    .limit { white-space:nowrap; color:var(--text); border:1px solid var(--line); border-radius:6px; padding:5px 9px; font-weight:700; }
+    .section-label { display:block; margin:0 0 11px; font-size:.98rem; font-weight:750; }
+    .choices { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
+    .choice { position:relative; display:block; cursor:pointer; }
+    .choice input { position:absolute; opacity:0; pointer-events:none; }
+    .choice-box { display:block; min-height:122px; border:1px solid var(--line); border-radius:9px; padding:17px; background:var(--surface-2); transition:border-color .16s,background .16s; }
+    .choice:hover .choice-box { border-color:#70809a; }
+    .choice input:checked + .choice-box { border-color:var(--accent); background:#1d2b47; box-shadow:inset 0 0 0 1px var(--accent); }
+    .choice-title { display:block; font-size:1.2rem; font-weight:800; }
+    .emoji { display:none; }
+    .pool-status { display:grid; grid-template-columns:repeat(2,1fr); gap:1px; margin-bottom:25px; overflow:hidden; border:1px solid var(--line); border-radius:9px; background:var(--line); }
+    .pool-stat { padding:14px 16px; background:#141821; }
+    .pool-stat span { display:block; color:var(--muted); font-size:.8rem; }
+    .pool-stat strong { display:block; margin-top:4px; color:var(--text); font-size:1.25rem; }
+    .amount-row { margin-top:25px; }
+    .input-wrap { display:flex; align-items:center; gap:9px; border:1px solid var(--line); background:#141821; border-radius:8px; padding:0 13px; }
+    .input-wrap:focus-within { border-color:var(--accent); box-shadow:0 0 0 2px #5f91ff2b; }
+    .input-wrap span { color:var(--muted); font-size:1.15rem; font-weight:700; }
+    input[type=number] { width:100%; padding:14px 0; border:0; outline:0; font:700 1.05rem inherit; color:var(--text); background:transparent; }
+    .calculation { margin:11px 1px 23px; color:var(--muted); font-size:.88rem; }
+    button { width:100%; border:0; border-radius:8px; padding:14px 18px; background:var(--accent); color:#fff; font:750 1rem inherit; cursor:pointer; transition:background .15s; }
+    button:hover { background:var(--accent-dark); }
+    .user-bar { display:flex; justify-content:space-between; align-items:center; gap:14px; margin-bottom:20px; padding:11px 0 17px; border-bottom:1px solid var(--line); color:var(--muted); font-size:.88rem; }
+    .user-bar strong { color:var(--text); }
+    button.link-button { width:auto; padding:0; border:0; color:var(--accent); background:transparent; font-size:.88rem; font-weight:700; }
+    button.link-button:hover { color:#a8c3ff; background:transparent; }
+    .note { text-align:center; color:var(--muted); font-size:.78rem; margin:18px 0 0; }
+    .result { display:none; margin-top:22px; padding:18px; border:1px solid #2f6554; border-radius:8px; background:#14281f; color:#d4f5e5; font-weight:600; line-height:1.65; }
+    .result.show { display:block; }
+    .result h2 { margin:0 0 5px; font-size:1.15rem; }
+    .rules { margin-top:26px; padding-top:23px; border-top:1px solid var(--line); }
+    .rules h2 { margin:0 0 14px; font-size:1rem; }
+    .rules dl { margin:0; display:grid; grid-template-columns:106px 1fr; gap:10px 14px; color:var(--muted); font-size:.9rem; line-height:1.55; }
+    .rules dt { color:var(--text); font-weight:750; }
+    .rules dd { margin:0; }
+    .examples { margin-top:17px; padding:14px; border:1px solid var(--line); border-radius:8px; background:#141821; color:var(--muted); font-size:.88rem; line-height:1.65; }
+    .examples strong { color:var(--text); }
+    .name-gate { position:fixed; z-index:10; inset:0; display:grid; place-items:center; padding:20px; background:rgba(6,8,12,.82); }
+    .name-gate[hidden] { display:none; }
+    .name-dialog { width:min(100%,460px); max-height:calc(100vh - 40px); overflow:auto; padding:26px; border:1px solid var(--line); border-radius:12px; background:var(--surface); box-shadow:0 18px 50px #0008; }
+    .name-dialog h2 { margin:0 0 7px; font-size:1.35rem; }
+    .name-dialog p { margin:0 0 20px; color:var(--muted); font-size:.9rem; line-height:1.55; }
+    .preamble { margin:0 0 20px; padding:15px; border:1px solid var(--line); border-radius:8px; background:#141821; color:var(--muted); font-size:.86rem; line-height:1.65; }
+    .preamble h3 { margin:0 0 9px; color:var(--text); font-size:.95rem; }
+    .preamble p { margin:0 0 11px; font-size:inherit; }
+    .preamble p:last-child { margin-bottom:0; }
+    .name-dialog input { width:100%; margin-bottom:13px; padding:13px; border:1px solid var(--line); border-radius:8px; outline:0; color:var(--text); background:#141821; font:700 1rem inherit; }
+    .name-dialog input:focus { border-color:var(--accent); box-shadow:0 0 0 2px #5f91ff2b; }
+    footer { text-align:center; margin-top:24px; color:#6f7988; font-size:.78rem; }
+    @media (max-width:540px) { .wrap { padding-top:36px; } .choices { grid-template-columns:1fr; } .pool-status { grid-template-columns:1fr; } .rule { align-items:flex-start; flex-direction:column; } .rules dl { grid-template-columns:1fr; gap:2px; } .rules dd { margin-bottom:9px; } }
+  </style>
+</head>
+<body>
+  <div class="name-gate" id="nameGate">
+    <form class="name-dialog" id="nameForm">
+      <h2>開始下注前</h2>
+      <p>請先閱讀前情提要，再填寫你的名字。</p>
+      <div class="preamble">
+        <h3>前情提要</h3>
+        <p>此賭注為好友之間娛樂所用。若重複下注或不遵守規則，在管理員勸導後仍未即時更正，將剔除參與資格。</p>
+        <p>此外，若管理員無法辨識下注者身分，且下注者未主動聯繫管理員，此注將視同無效。</p>
+        <p>一人一注。若管理員發現下注者重複下注，管理員將與參與者直接溝通；若雙方無協議，將以最後一注為正式賭注。</p>
+        <p>下注有效及成功後，管理員將與下注者聯繫，討論賭金交付事宜。</p>
+        <p>管理者非正式網站開發人員；若有 Bug，請聯繫 RaymondTu，也請見諒。
+        <p>進入下注畫面後，下方有規則說明，請務必閱讀。
+        </p>
+      </div>
+      <label class="section-label" for="bettorName">你的名字</label>
+      <input id="bettorName" type="text" maxlength="30" autocomplete="name" required placeholder="例如：我是gay">
+      <button type="submit">確認並開始</button>
+    </form>
+  </div>
+  <main class="wrap">
+    <header>
+      <div class="eyebrow">FRIENDS ONLY · FOR FUN</div>
+      <h1>LOVE<span>-</span>BET</h1>
+      <p class="tagline">曾譽賢 × 李昕</p>
+    </header>
+
+    <section class="card" aria-labelledby="bet-heading">
+      <div class="user-bar"><span>目前下注人：<strong id="activeName">未設定</strong></span><button type="button" class="link-button" id="changeName">更換名稱</button></div>
+      <div class="rule"><span>本局主題：他們會不會在一起？</span><span class="limit">單筆最高 $3000</span></div>
+      <div class="pool-status" aria-label="目前獎池資訊">
+        <div class="pool-stat"><span>目前獎池</span><strong id="poolAmount">$XXXX</strong></div>
+        <div class="pool-stat"><span>總參與人數</span><strong id="participantCount">x 人</strong></div>
+      </div>
+      <h2 id="bet-heading" class="section-label">選擇結果</h2>
+      <form id="betForm">
+        <div class="choices">
+          <label class="choice">
+            <input type="radio" name="outcome" value="會在一起" checked>
+            <span class="choice-box"><span class="choice-title">會在一起</span></span>
+          </label>
+          <label class="choice">
+            <input type="radio" name="outcome" value="不會在一起">
+            <span class="choice-box"><span class="choice-title">不會在一起</span></span>
+          </label>
+        </div>
+        <div class="amount-row">
+          <label class="section-label" for="amount">下注金額</label>
+          <div class="input-wrap"><span>$</span><input id="amount" type="number" min="1" max="3000" value="100" inputmode="numeric" required aria-describedby="amountHint"></div>
+          <div class="calculation"><span id="amountHint">範圍：$1～$3000</span></div>
+        </div>
+        <button type="submit">送出賭注</button>
+      </form>
+      <div class="result" id="result" role="status" aria-live="polite"></div>
+      <section class="rules" aria-labelledby="rules-heading">
+        <h2 id="rules-heading">規則說明</h2>
+        <dl>
+          <dt>截止日期</dt>
+          <dd>2026 年 12 月 31 日 23:59（含）以前。</dd>
+          <dt>判定標準</dt>
+          <dd>以當事人提供的資訊為準；若未提供，則由參與者協議，或依公開且可驗證的資訊判定。</dd>
+          <dt>獎池玩法</dt>
+          <dd>本局採總獎池玩法，不設個別賠率；獎池與參與人數每30秒更新。</dd>
+        </dl>
+        <div class="examples">
+          <strong>判定範例&規則</strong><br>
+          若事件發生於 12/31 23:59 前，「會在一起」贏得賭注，「不會在一起」失去賭注。<br>
+          若事件發生於 12/31 23:59 後，「會在一起」失去賭注，「不會在一起」贏得賭注。
+          贏的一方將平分獎池。如：總將金$5000，勝方有 5 人下注，則每人可獲得 $1000。若勝方無人下注，則獎池由管理員保留。
+        </div>
+      </section>
+      <p class="note">本網站僅供朋友間娛樂。下注資料僅供管理員查看。</p>
+    </section>
+    <footer>投資一定有風險，基金投資有賺有賠，申購前，請先詳閱公開說明書</footer>
+  </main>
+  <script>
+    const amount = document.getElementById('amount');
+    const result = document.getElementById('result');
+    const form = document.getElementById('betForm');
+    const nameGate = document.getElementById('nameGate');
+    const nameForm = document.getElementById('nameForm');
+    const bettorName = document.getElementById('bettorName');
+    const activeName = document.getElementById('activeName');
+    const poolAmount = document.getElementById('poolAmount');
+    const participantCount = document.getElementById('participantCount');
+    const nameKey = 'love-bet-current-name-v1';
+    // 設定完成後，將這行替換為 Google Apps Script「網頁應用程式」網址。
+    const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwL8cVwXbqQUw80sP1dazCezlJ8RJG8KQIdXwp6TOWqtnq2sw5GfcBKssGvpg_RYDdi/exec';
+    let currentName = '';
+    function setCurrentName(name) {
+      currentName = name.trim();
+      activeName.textContent = currentName;
+      try { localStorage.setItem(nameKey, currentName); } catch {}
+      nameGate.hidden = true;
+    }
+    function openNameGate() { bettorName.value = currentName; nameGate.hidden = false; setTimeout(() => bettorName.focus(), 0); }
+    function selected() { return document.querySelector('input[name="outcome"]:checked'); }
+    function updatePoolStats(data) {
+      if (!data || !Number.isFinite(Number(data.pool)) || !Number.isFinite(Number(data.participants))) return;
+      poolAmount.textContent = '$' + Number(data.pool).toLocaleString('zh-TW');
+      participantCount.textContent = Number(data.participants).toLocaleString('zh-TW') + ' 人';
+    }
+    function loadPoolStats() {
+      if (GOOGLE_APPS_SCRIPT_URL.startsWith('請在此')) return;
+      const previous = document.getElementById('poolStatsRequest');
+      if (previous) previous.remove();
+      const script = document.createElement('script');
+      script.id = 'poolStatsRequest';
+      const separator = GOOGLE_APPS_SCRIPT_URL.includes('?') ? '&' : '?';
+      script.src = GOOGLE_APPS_SCRIPT_URL + separator + 'callback=updatePoolStats&t=' + Date.now();
+      document.head.appendChild(script);
+    }
+    nameForm.addEventListener('submit', event => { event.preventDefault(); const name = bettorName.value.trim(); if (name) setCurrentName(name); });
+    document.getElementById('changeName').addEventListener('click', openNameGate);
+    form.addEventListener('submit', async event => {
+      event.preventDefault();
+      const value = Number(amount.value);
+      if (!Number.isFinite(value) || value < 1 || value > 3000) {
+        result.className = 'result show';
+        result.innerHTML = '<h2>金額不符合規則</h2>請輸入 $1 到 $3000 之間的金額。';
+        return;
+      }
+      const bet = selected();
+      if (GOOGLE_APPS_SCRIPT_URL.startsWith('請在此')) {
+        result.className = 'result show';
+        result.innerHTML = '<h2>尚未連接管理員資料庫</h2>請先依照設定說明，將 Google Apps Script 網址貼入 HTML。';
+        return;
+      }
+      const submitButton = form.querySelector('button[type="submit"]');
+      submitButton.disabled = true;
+      submitButton.textContent = '送出中…';
+      try {
+        await fetch(GOOGLE_APPS_SCRIPT_URL, {
+          method: 'POST', mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ name:currentName, outcome:bet.value, amount:value, submittedAt:new Date().toISOString() })
+        });
+      } catch (error) {
+        result.className = 'result show';
+        result.innerHTML = '<h2>送出失敗</h2>請確認網路連線後再試一次。';
+        submitButton.disabled = false;
+        submitButton.textContent = '送出賭注';
+        return;
+      }
+      result.className = 'result show';
+      result.innerHTML = `<h2>賭注已送出</h2><strong>${currentName}</strong> 選擇 <strong>${bet.value}</strong>，下注 <strong>$${value}</strong>。<br><small>賭注已送入總獎池，資料已送交管理員紀錄。</small>`;
+      submitButton.disabled = false;
+      submitButton.textContent = '送出賭注';
+      setTimeout(loadPoolStats, 1500);
+      result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+    loadPoolStats();
+    setInterval(loadPoolStats, 30000);
+    try { const savedName = localStorage.getItem(nameKey); if (savedName) setCurrentName(savedName); else openNameGate(); } catch { openNameGate(); }
+  </script>
+</body>
+</html>
